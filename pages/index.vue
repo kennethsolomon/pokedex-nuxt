@@ -5,16 +5,13 @@
         <h2 class="text-3xl font-bold">Pokedex</h2>
       </div>
       <div class="flex flex-wrap items-center">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        <Card
+          v-for="pokemon in pokemons"
+          :key="pokemon.id"
+          :pokemon="pokemon"
+        />
       </div>
     </div>
-    <!-- <div v-for="pokemon in pokemons" :key="pokemon.id"> -->
-    <!-- {{ pokemon.name }} -->
-    <!-- </div> -->
   </div>
 </template>
 
@@ -31,11 +28,14 @@ export default {
       await this.$store
         .dispatch('getPokemons')
         .then((result) => {
-          result.data.slice(0, 10).forEach(async (element) => {
-            await this.$axios.get(element.url).then((result) => {
-              this.pokemons.push(result.data)
+          let random_number = this.$randomTwoNumbers(1, 1271)
+          result.data
+            .slice(random_number, random_number + 20)
+            .forEach(async (element) => {
+              await this.$axios.get(element.url).then((result) => {
+                this.pokemons.push(result.data)
+              })
             })
-          })
         })
         .catch((error) => {
           console.log(error)
